@@ -1,0 +1,37 @@
+<!-- sldsValidatorIgnore -->
+<template>
+    <lightning-card>
+        <h1 class="slds-text-align_center">
+            IDEAS
+        </h1>
+        
+        <lightning-button label="New Idea" onclick={newIdea} slot="actions"></lightning-button>
+        
+        <!--<lightning-datatable
+            key-field="Id"
+            data={ideas.data}
+            columns={columns}>
+        </lightning-datatable>-->
+
+        <template if:true={ideas.data}>
+            <template for:each={ideas.data} for:item="idea">
+                <lightning-card title={idea.Title} icon-name="standard:record" key={idea.Id}>
+                    <div class="slds-m-around_medium">
+                        {idea.Body}
+                    </div>
+                </lightning-card>
+            </template>
+        </template>
+
+        <template if:true={showNewIdeaForm}>
+            <lightning-card title="LdsCreateRecord" icon-name="standard:record">
+                <div class="slds-m-around_medium">
+                    <!--<lightning-input label="Id" disabled value={accountId}></lightning-input>-->
+                    <lightning-input label="Name" class="slds-m-bottom_x-small"></lightning-input>
+                    <lightning-button label="Create Idea" variant="brand" onclick={createIdea}></lightning-button>
+                </div>
+            </lightning-card>
+        </template>
+
+    </lightning-card>
+</template>
