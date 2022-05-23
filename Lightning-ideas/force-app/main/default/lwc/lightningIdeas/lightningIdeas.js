@@ -1,49 +1,38 @@
 import { LightningElement,wire } from 'lwc';
-import { createRecord } from 'lightning/uiRecordApi';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import IDEA_OBJECT from '@salesforce/schema/Idea';
-import TITLE_FIELD from '@salesforce/schema/Idea.Title';
 import getIdeas from '@salesforce/apex/ideasController.getIdeas';
-
-const columns = [
-    { label: 'Id', fieldName: 'Id' },
-    { label: 'Title', fieldName: 'Title' },
-];
+import createIdea from '@salesforce/apex/ideasController.createIdea';
+import voteOnIdea from '@salesforce/apex/ideasController.voteOnIdea';
+import addUpdateComment from '@salesforce/apex/ideasController.addUpdateComment';
+import deleteComment from '@salesforce/apex/ideasController.deleteComment';
 
 export default class LightningIdeas extends LightningElement {
 
-    columns = columns;
-    showNewIdeaForm;
+    showNewIdeaForm = true;
+    newIdea = {};
+
+    handleChange(event){
+        this.newIdea[event.target.name] = event.target.value;
+    }
 
     newIdea(){
         this.showNewIdeaForm = true;
     }
 
-    createIdea() {
-        const fields = {};
-        fields[TITLE_FIELD.fieldApiName] = this.name;
-        const recordInput = { apiName: IDEA_OBJECT.objectApiName, fields };
-        createRecord(recordInput)
-            .then(account => {
-                this.accountId = account.id;
-                this.dispatchEvent(
-                    new ShowToastEvent({
-                        title: 'Success',
-                        message: 'Idea created',
-                        variant: 'success',
-                    }),
-                );
+    createNewIdea() {
+        //note can't use lightning-record-form/lightning/uiRecordApi as the object is not enabled for lightning!
+
+        createIdea({ newIdeaJSON: this.newIdea })
+            .then((result) => {
+                this.contacts = result;
+                this.error = undefined;
+                this.showNewIdeaForm = false;
             })
-            .catch(error => {
-                this.dispatchEvent(
-                    new ShowToastEvent({
-                        title: 'Error creating record',
-                        message: error.body.message,
-                        variant: 'error',
-                    }),
-                );
+            .catch((error) => {
+                this.error = error;
+                this.contacts = undefined;
             });
     }
 
-    @wire(getIdeas) ideas;
+    @wire(getIdeas)ideas;
 }

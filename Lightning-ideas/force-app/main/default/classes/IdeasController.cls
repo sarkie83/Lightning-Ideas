@@ -5,10 +5,19 @@ public with sharing class IdeasController {
         return [SELECT Id,Body,Categories,NumComments,RecordType.DeveloperName,Title,VoteScore,VoteTotal,Status FROM Idea];
     }
 
-    @AuraEnabled(cacheable=true)
-    public static String createIdea(){
+    @AuraEnabled(cacheable=false)
+    public static String createIdea(String newIdeaJSON){
+        system.debug(newIdeaJSON);
+        Map<String, Object> m = (Map<String, Object>)JSON.deserializeUntyped(newIdeaJSON);
+
         Idea newIdea = new Idea();
-        Database.insert(newIdea,false);
+        newIdea.Title = (String)m.get('title');
+        newIdea.Body = (String)m.get('body');
+        newIdea.Categories = (String)m.get('categories');
+        newIdea.Status = 'New';
+        system.debug(newIdea);
+        //newIdea.VoteScore = 10; dunno if we need to do this?
+        insert newIdea;
         /*for(Database.SaveResult sr : ){
             if(sr.isSuccess()){
                 return 'Idea created';
@@ -21,17 +30,27 @@ public with sharing class IdeasController {
     }
 
     @AuraEnabled(cacheable=true)
-    public static Boolean voteOnIdea(){
+    public static Boolean voteOnIdea(Id ideaId,Boolean upvote){
+        IdeaComment newComment = new IdeaComment();
+        newComment.IdeaId = ideaId;
+        //newComment.UpVotes = upvote ? 10 : -10;
+        insert newComment;
         return true;
     }
 
     @AuraEnabled(cacheable=true)
-    public static Boolean addUpdateComment(){
+    public static Boolean addUpdateComment(Id ideaId, Id commentId, String comment){
+        IdeaComment newComment = new IdeaComment();
+        newComment.IdeaId = ideaId;
+        newComment.Id = commentId;
+        newComment.CommentBody = comment;
+        upsert newComment;
         return true;
     }
 
     @AuraEnabled(cacheable=true)
-    public static Boolean deleteComment(){
+    public static Boolean deleteComment(Id commentId){
+        delete new IdeaComment(Id=commentId);
         return true;
     }
 
