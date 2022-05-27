@@ -2,7 +2,7 @@ public with sharing class IdeasController {
 
     @AuraEnabled(cacheable=true)
     public static List<Idea> getIdeas(){
-        return [SELECT Id,Body,Categories,NumComments,RecordType.DeveloperName,Title,VoteScore,VoteTotal,Status FROM Idea];
+        return [SELECT Id,Body,Categories,NumComments,RecordType.DeveloperName,Title,VoteScore,VoteTotal,Status FROM Idea ORDER BY VoteScore DESC];
     }
 
     @AuraEnabled(cacheable=false)
@@ -10,13 +10,15 @@ public with sharing class IdeasController {
         system.debug(newIdeaJSON);
         Map<String, Object> m = (Map<String, Object>)JSON.deserializeUntyped(newIdeaJSON);
 
-        Idea newIdea = new Idea();
-        newIdea.Title = (String)m.get('title');
-        newIdea.Body = (String)m.get('body');
-        newIdea.Categories = (String)m.get('categories');
-        newIdea.Status = 'New';
+        Community internalZone = [SELECT Id FROM Community WHERE name = 'Internal Zone']; //defaul internal zone
+
+        Idea newIdea        = new Idea();
+        newIdea.Title       = (String)m.get('title');
+        newIdea.Body        = (String)m.get('body');
+        newIdea.Categories  = (String)m.get('categories');
+        newIdea.CommunityId = (String)m.get('zone') != null ? (String)m.get('zone') : internalZone.id;
+        newIdea.Status      = 'New';
         system.debug(newIdea);
-        //newIdea.VoteScore = 10; dunno if we need to do this?
         insert newIdea;
         /*for(Database.SaveResult sr : ){
             if(sr.isSuccess()){
@@ -26,6 +28,13 @@ public with sharing class IdeasController {
                 return 'Failed to create idea'+sr.getErrors();
             }
         }*/
+        return '';
+    }
+
+    @AuraEnabled(cacheable=false)
+    public static String deleteIdea(Id ideaId){
+        Idea ideaToDelete = new Idea(Id=ideaId);
+        delete ideaToDelete;
         return '';
     }
 
