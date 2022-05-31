@@ -1,6 +1,25 @@
 public with sharing class IdeasController {
 
     @AuraEnabled(cacheable=true)
+    public static Map<String,List<String>> getFilterables(){
+        List<String> Statuses = new List<String>();
+        List<String> Categories = new List<String>();
+        List<String> Zones = new List<String>();
+        for(Idea idea: [SELECT Status,Categories,Community.Name FROM Idea]){
+            if(!Statuses.contains(idea.Status)){
+                Statuses.add(idea.Status);
+            }
+            if(!Categories.contains(idea.Categories)){
+                Categories.add(idea.Categories); //TODO - string.split?
+            }
+            if(!Zones.contains(idea.Community.Name)){
+                Zones.add(idea.Community.Name);
+            }
+        }
+        return new Map<String,List<String>>{'Statuses' => Statuses,'Categories' => Categories,'Zones' => Zones};
+    }
+
+    @AuraEnabled(cacheable=true)
     public static List<Idea> getIdeas(){
         return [SELECT Id,Body,Categories,NumComments,RecordType.DeveloperName,Title,VoteScore,VoteTotal,Status FROM Idea ORDER BY VoteScore DESC];
     }
@@ -38,12 +57,12 @@ public with sharing class IdeasController {
         return '';
     }
 
-    @AuraEnabled(cacheable=true)
-    public static Boolean voteOnIdea(Id ideaId,Boolean upvote){
-        IdeaComment newComment = new IdeaComment();
-        newComment.IdeaId = ideaId;
-        //newComment.UpVotes = upvote ? 10 : -10;
-        insert newComment;
+    @AuraEnabled()
+    public static Boolean voteOnIdea(Id ideaId,String type){
+        Vote newVote = new Vote();
+        newVote.parentId = ideaId;
+        newVote.Type = type;
+        insert newVote;
         return true;
     }
 
