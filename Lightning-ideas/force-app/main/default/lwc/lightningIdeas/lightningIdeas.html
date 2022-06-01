@@ -1,79 +1,183 @@
 <!-- sldsValidatorIgnore -->
 <template>
-    <lightning-card icon-name="utility:light_bulb">
-        <h1 class="slds-page-header__title slds-align-middle slds-truncate slds-text-align_center" slot="title">
-            Ideas
-        </h1>
-
-        <div class="slds-einstein-header" slot="heading"></div>
-        
-        <lightning-button label="New Idea" onclick={createNewIdea} slot="actions"></lightning-button>
-
+    <!--Single Record View-->
+    <template if:true={recordId}>
         <lightning-layout>
-            
-            <lightning-layout-item padding="around-small" size="3">      
-                <lightning-accordion class="example-accordion" onsectiontoggle={handleToggleSection} active-section-name="B">
-                    <lightning-accordion-section name="Zones" label="Zones">
-                        <template for:each={zones} for:item="zone">
-                            <lightning-input type="checkbox" label={zone} key={zone} checked> </lightning-input>
-                        </template>
-                    </lightning-accordion-section>
-
-                    <lightning-accordion-section name="Status" label="Status">
-                        <template for:each={statuses} for:item="status">
-                            <lightning-input type="checkbox" label={status} key={status} checked> </lightning-input>
-                        </template>
-                    </lightning-accordion-section>
-
-                    <lightning-accordion-section name="Category" label="Category">
-                        <template for:each={categories} for:item="category">
-                            <lightning-input type="checkbox" label={category} key={category} checked> </lightning-input>
-                        </template>
-                    </lightning-accordion-section>
-
-                    <lightning-accordion-section name="Sort" label="Sort">
-                        Sort
-                    </lightning-accordion-section>
-                </lightning-accordion>
+            <lightning-layout-item size="12"> 
+                <lightning-card icon-name="standard:skill" title={selectedRecord.Title}>
+                    <div slot="actions">
+                        <lightning-button-group>
+                            <lightning-button label="Approve" disabled></lightning-button>
+                            <lightning-button label="Edit"></lightning-button>
+                            <lightning-button label="Save"></lightning-button>
+                            <lightning-button label="Delete" data-id={recordId} onclick={deleteIdea}></lightning-button>
+                        </lightning-button-group>
+                    </div>
+                </lightning-card>
             </lightning-layout-item>
-
-            <lightning-layout-item padding="around-small" size="9">
-                <template if:true={ideas}>
-                    <template for:each={ideas} for:item="idea">
-                        <lightning-card icon-name="standard:skill" key={idea.Id} class="slds-box">
-                            <div slot="title">
-                                <a href="https://sarkiesparkingspace-dev-ed.lightning.force.com/lightning/n/Lightning_Ideas?c__id=">{idea.Title}</a>
-                            </div>
-                            <div slot="actions">
-                                <lightning-button-icon data-id={idea.Id} data-vote="Up" icon-name="utility:like" size="medium" alternative-text="Up Vote" onclick={voteOnIdea}></lightning-button-icon>
-                                {idea.VoteTotal} Points
-                                <lightning-button-icon data-id={idea.Id} data-vote="Down" icon-name="utility:dislike" size="medium" alternative-text="Down Up" onclick={voteOnIdea}></lightning-button-icon>
-                                <br />
-                                <lightning-badge label={idea.Status}></lightning-badge>
-                            </div>
-                            <div class="slds-m-around_medium">
-                                {idea.Body}
-                            </div>
-                            <div slot="footer">
-                                <h6>{idea.NumComments} Comment(s)</h6>
-                                <template if:true={showNewIdeaForm}>
-                                    <lightning-button data-id={idea.Id} label="Delete Idea" variant="border-filled" onclick={deleteIdea}></lightning-button>
-                                </template>
-                            </div>
-                        </lightning-card>
-                    </template>
-                </template>
-            </lightning-layout-item>
-
         </lightning-layout>
 
-        <template if:true={showNewIdeaForm}>
-            <c-new-lightning-idea onclosenewmodal={cancelNewIdea} onnewideacreated={newIdeaCreated}></c-new-lightning-idea>
-        </template>
+        <lightning-layout class="slds-p-top_small">
+            <lightning-layout-item size="12"> 
+                <lightning-card>
+                    <div class="slds-p-around_small">
+                        <lightning-button-icon icon-name="utility:like" size="medium" alternative-text="Up Vote"></lightning-button-icon>
+                        <lightning-button-icon icon-name="utility:dislike" size="medium" alternative-text="Down Vote"></lightning-button-icon>
+                    </div>
+                </lightning-card>
+            </lightning-layout-item>
+        </lightning-layout>
 
-        <template if:true={error}>
-            <b>Something went wrong creating Idea :-/</b>
-        </template>
+        <lightning-layout class="slds-p-top_small">
+            <lightning-layout-item size="8" class="slds-p-right_small"> 
+                <lightning-card>
+                    <lightning-layout class="slds-p-around_small">
+                        
+                        <lightning-layout-item size="12"> 
+                        <div class="slds-form" role="list">
+                            <div class="slds-form__row">
+                              <div class="slds-form__item" role="listitem">
+                                <div class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
+                                  <span class="slds-form-element__label">Title</span>
+                                  <div class="slds-form-element__control">
+                                    <div class="slds-form-element__static">
+                                        {selectedRecord.Title}
+                                    </div>
+                                    <button class="slds-button slds-button_icon" title="Edit: Assigned To">
+                                      <svg class="slds-button__icon slds-button__icon_hint" aria-hidden="true">
+                                        <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#edit"></use>
+                                      </svg>
+                                      <span class="slds-assistive-text">Edit: Assigned To</span>
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="slds-form__item" role="listitem">
+                                <div class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
+                                  <span class="slds-form-element__label">Status</span>
+                                  <div class="slds-form-element__control">
+                                    <div class="slds-form-element__static">
+                                      {selectedRecord.Status}
+                                    </div>
+                                    <button class="slds-button slds-button_icon" title="Edit: Team Name">
+                                      <svg class="slds-button__icon slds-button__icon_hint" aria-hidden="true">
+                                        <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#edit"></use>
+                                      </svg>
+                                      <span class="slds-assistive-text">Edit: Team Name</span>
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+                        </lightning-layout-item>
+                            
+                        <!--
+                        <lightning-layout-item size="6"> 
+                            {selectedRecord.Title}<br />
+                            {selectedRecord.Zone}<br />
+                            {selectedRecord.Body}
+                            
+                        </lightning-layout-item>
+                        <lightning-layout-item size="6"> 
+                            {selectedRecord.Status}<br />
+                            {selectedRecord.Category}<br />
+                            {selectedRecord.VoteTotal}
+                        </lightning-layout-item>
+                        -->
+                    </lightning-layout>
+                </lightning-card> 
+            </lightning-layout-item>
+            <lightning-layout-item size="4">
+                <lightning-card icon-name="standard:live_chat" title="Comments">
+                    <template for:each={selectedRecord.Comments} for:item="comment">
+                        <div key={comment.Id}  class="slds-p-around_small">
+                            <lightning-formatted-rich-text value={comment.CommentBody}></lightning-formatted-rich-text><br />
+                        </div>
+                    </template>
+                </lightning-card> 
+            </lightning-layout-item>
+        </lightning-layout>
+    </template>
 
-    </lightning-card>
+    <!--List View-->
+    <template if:false={recordId}>
+        <lightning-card icon-name="utility:light_bulb">
+            <h1 class="slds-page-header__title slds-align-middle slds-truncate slds-einstein-header" slot="title">
+                &nbsp;Ideas&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </h1>
+            
+            <lightning-button label="New Idea" onclick={createNewIdea} slot="actions"></lightning-button>
+
+            <lightning-layout>
+                
+                <lightning-layout-item size="3">      
+                    <lightning-accordion class="example-accordion" onsectiontoggle={handleToggleSection} active-section-name="B">
+                        <lightning-accordion-section name="Zones" label="Zones">
+                            <template for:each={zones} for:item="zone">
+                                <lightning-input type="checkbox" label={zone} key={zone} checked> </lightning-input>
+                            </template>
+                        </lightning-accordion-section>
+
+                        <lightning-accordion-section name="Status" label="Status">
+                            <template for:each={statuses} for:item="status">
+                                <lightning-input type="checkbox" label={status} key={status} checked> </lightning-input>
+                            </template>
+                        </lightning-accordion-section>
+
+                        <lightning-accordion-section name="Category" label="Category">
+                            <template for:each={categories} for:item="category">
+                                <lightning-input type="checkbox" label={category} key={category} checked> </lightning-input>
+                            </template>
+                        </lightning-accordion-section>
+
+                        <lightning-accordion-section name="Sort" label="Sort">
+                            Sort
+                        </lightning-accordion-section>
+                    </lightning-accordion>
+                </lightning-layout-item>
+
+                <lightning-layout-item size="9">
+                    <template if:true={ideas}>
+                        <template for:each={ideas} for:item="idea">
+                            <div key={idea.Id}>
+                                <lightning-card icon-name="standard:skill">
+                                    <div data-id={idea.Id} onclick={navigateToRecord} slot="title">
+                                        <a href="#">{idea.Title}</a>&nbsp;
+                                        <lightning-badge label={idea.Status}></lightning-badge>
+                                    </div>
+                                    <div slot="actions">
+                                        <lightning-button-icon data-id={idea.Id} data-vote="Up" icon-name="utility:like" size="medium" alternative-text="Up Vote" onclick={voteOnIdea}></lightning-button-icon>
+                                        &nbsp;{idea.VoteTotal} Points&nbsp;
+                                        <lightning-button-icon data-id={idea.Id} data-vote="Down" icon-name="utility:dislike" size="medium" alternative-text="Down Up" onclick={voteOnIdea}></lightning-button-icon>                                        
+                                    </div>
+                                    <div class="slds-m-around_medium">
+                                        <lightning-layout>
+                                            <lightning-layout-item size="10">
+                                                <lightning-formatted-rich-text value={idea.Body}></lightning-formatted-rich-text>
+                                                <br /><br />
+                                                {idea.NumComments} Comment(s) <lightning-formatted-date-time class="slds-float_right" value={idea.CreatedDate}></lightning-formatted-date-time>
+                                            </lightning-layout-item>
+                                        </lightning-layout>
+                                    </div>
+                                </lightning-card>
+                                <hr />
+                            </div>
+
+                        </template>
+                    </template>
+                </lightning-layout-item>
+
+            </lightning-layout>
+
+            <template if:true={showNewIdeaForm}>
+                <c-new-lightning-idea onclosenewmodal={cancelNewIdea} onnewideacreated={newIdeaCreated}></c-new-lightning-idea>
+            </template>
+
+            <template if:true={error}>
+                <b>Something went wrong creating Idea :-/</b>
+            </template>
+
+        </lightning-card>
+    </template>
 </template>

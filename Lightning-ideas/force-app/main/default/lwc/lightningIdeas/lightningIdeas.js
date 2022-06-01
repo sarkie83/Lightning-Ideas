@@ -12,6 +12,10 @@ import deleteComment from '@salesforce/apex/ideasController.deleteComment';
 
 export default class LightningIdeas extends LightningElement {
 
+    parameters = {};
+    recordId;
+    selectedRecord;
+
     showNewIdeaForm = false;
     error;
     zones;
@@ -28,7 +32,23 @@ export default class LightningIdeas extends LightningElement {
     //TODO, might want to do this on filerables as well
 
     connectedCallback() {
-        console.log(location.search); //note params should begin c__
+        this.parameters = this.getQueryParameters();
+        console.log(this.parameters['c__id']);
+        this.recordId = this.parameters['c__id'];
+    }
+
+    getQueryParameters() {
+
+        var params = {};
+        var search = location.search.substring(1); //note params should begin c__
+
+        if (search) {
+            params = JSON.parse('{"' + search.replace(/&/g, '","').replace(/=/g, '":"') + '"}', (key, value) => {
+                return key === "" ? value : decodeURIComponent(value)
+            });
+        }
+
+        return params;
     }
 
     @wire(getObjectInfo, { objectApiName: IDEA_OBJECT})
@@ -49,6 +69,17 @@ export default class LightningIdeas extends LightningElement {
         }
     };
 
+    navigateToRecord(event){
+        const recId = event.currentTarget.dataset.id;
+        this.ideas.forEach(record => {
+            console.log(record.Id);
+            if(record.Id===recId){
+                this.selectedRecord = record;
+            }
+        });
+        this.recordId = recId;
+    }
+
     createNewIdea(){
         this.showNewIdeaForm = true;
     }
@@ -57,7 +88,7 @@ export default class LightningIdeas extends LightningElement {
         console.log(event.currentTarget.dataset.vote);
         voteOnIdea({ideaId: event.currentTarget.dataset.id, upvote: event.currentTarget.dataset.vote})
             .then((resut) => {
-                //refreshApex(this._wiredIdeasResponse);    
+                //refreshApex(this._wiredIdeasResponse); //Causes too many DML operations 1 error
             })
             .catch((error) => {
 
@@ -67,7 +98,8 @@ export default class LightningIdeas extends LightningElement {
     deleteIdea(event){
         deleteIdea({ideaId: event.currentTarget.dataset.id})
             .then((result) => {
-                refreshApex(this._wiredIdeasResponse);        
+                refreshApex(this._wiredIdeasResponse); 
+                this.recordId = undefined;
             })
             .catch((error) => {
                 console.log(JSON.stringify(error));
@@ -82,7 +114,6 @@ export default class LightningIdeas extends LightningElement {
     }
 
     newIdeaCreated(event){
-        console.log('in newIdeaCreated');
         if(event.detail==='created'){
             this.showNotification();
             this.showNewIdeaForm = false;
@@ -94,13 +125,12 @@ export default class LightningIdeas extends LightningElement {
     fetchideas(wireResult) {
         const { data, error } = wireResult;
         this._wiredIdeasResponse = wireResult;
-        console.log(JSON.stringify(data));
         if (data) {
             this.ideas = data;
             this.error = undefined;
         } else if (error) {
             this.error = error;
-            //this.contacts = undefined;
+            this.ideas = undefined;
         }
     };
 

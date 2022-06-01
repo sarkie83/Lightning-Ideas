@@ -21,7 +21,7 @@ public with sharing class IdeasController {
 
     @AuraEnabled(cacheable=true)
     public static List<Idea> getIdeas(){
-        return [SELECT Id,Body,Categories,NumComments,RecordType.DeveloperName,Title,VoteScore,VoteTotal,Status FROM Idea ORDER BY VoteScore DESC];
+        return [SELECT Id,CreatedDate,CreatedBy.Name,Body,Categories,NumComments,RecordType.DeveloperName,Title,VoteScore,VoteTotal,Status,Url__c,(SELECT Id,CommentBody,CreatedBy.name,createddate FROM Comments) FROM Idea ORDER BY VoteScore DESC];
     }
 
     @AuraEnabled(cacheable=false)
@@ -33,7 +33,7 @@ public with sharing class IdeasController {
 
         Idea newIdea        = new Idea();
         newIdea.Title       = (String)m.get('title');
-        newIdea.Body        = (String)m.get('body');
+        newIdea.Body        = (String)m.get('description');
         newIdea.Categories  = (String)m.get('categories');
         newIdea.CommunityId = (String)m.get('zone') != null ? (String)m.get('zone') : internalZone.id;
         newIdea.Status      = 'New';
