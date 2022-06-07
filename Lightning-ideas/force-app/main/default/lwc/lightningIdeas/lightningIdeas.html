@@ -31,60 +31,164 @@
         <lightning-layout class="slds-p-top_small">
             <lightning-layout-item size="8" class="slds-p-right_small"> 
                 <lightning-card>
-                    <lightning-layout class="slds-p-around_small">
+                    <lightning-layout class="slds-p-around_small" multiple-rows>
                         
                         <lightning-layout-item size="12"> 
-                        <div class="slds-form" role="list">
-                            <div class="slds-form__row">
-                              <div class="slds-form__item" role="listitem">
-                                <div class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
-                                  <span class="slds-form-element__label">Title</span>
-                                  <div class="slds-form-element__control">
-                                    <div class="slds-form-element__static">
-                                        {selectedRecord.Title}
+                            <div class="slds-form" role="list">
+                                <div class="slds-form__row">
+                                    <div class="slds-form__item" role="listitem">
+                                        <div class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
+                                        <span class="slds-form-element__label">Title</span>
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-form-element__static">
+                                                {selectedRecord.Title}
+                                            </div>
+                                            <button class="slds-button slds-button_icon" title="Edit: Title">
+                                            <svg class="slds-button__icon slds-button__icon_hint" aria-hidden="true">
+                                                <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#edit"></use>
+                                            </svg>
+                                            <span class="slds-assistive-text">Edit: Title</span>
+                                            </button>
+                                        </div>
+                                        </div>
                                     </div>
-                                    <button class="slds-button slds-button_icon" title="Edit: Assigned To">
-                                      <svg class="slds-button__icon slds-button__icon_hint" aria-hidden="true">
-                                        <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#edit"></use>
-                                      </svg>
-                                      <span class="slds-assistive-text">Edit: Assigned To</span>
-                                    </button>
-                                  </div>
-                                </div>
-                              </div>
-                              <div class="slds-form__item" role="listitem">
-                                <div class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
-                                  <span class="slds-form-element__label">Status</span>
-                                  <div class="slds-form-element__control">
-                                    <div class="slds-form-element__static">
-                                      {selectedRecord.Status}
+                                <div class="slds-form__item" role="listitem">
+                                    <div class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
+                                    <span class="slds-form-element__label">Status</span>
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-form-element__static">
+                                        {selectedRecord.Status}
+                                        </div>
+                                        <button class="slds-button slds-button_icon" title="Edit: Status">
+                                        <svg class="slds-button__icon slds-button__icon_hint" aria-hidden="true">
+                                            <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#edit"></use>
+                                        </svg>
+                                        <span class="slds-assistive-text">Edit: Status</span>
+                                        </button>
                                     </div>
-                                    <button class="slds-button slds-button_icon" title="Edit: Team Name">
-                                      <svg class="slds-button__icon slds-button__icon_hint" aria-hidden="true">
-                                        <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#edit"></use>
-                                      </svg>
-                                      <span class="slds-assistive-text">Edit: Team Name</span>
-                                    </button>
-                                  </div>
+                                    </div>
                                 </div>
-                              </div>
+                                </div>
                             </div>
-                        </div>
                         </lightning-layout-item>
                             
-                        <!--
-                        <lightning-layout-item size="6"> 
-                            {selectedRecord.Title}<br />
-                            {selectedRecord.Zone}<br />
-                            {selectedRecord.Body}
-                            
+                        <lightning-layout-item size="12"> 
+                            <div class="slds-form" role="list">
+                                <div class="slds-form__row">
+                                    <div class="slds-form__item" role="listitem">
+                                        <div class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
+                                        <span class="slds-form-element__label">Zone</span>
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-form-element__static">
+                                                {selectedRecord.Zone}
+                                            </div>
+                                            <button class="slds-button slds-button_icon" title="Edit: Zone">
+                                            <svg class="slds-button__icon slds-button__icon_hint" aria-hidden="true">
+                                                <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#edit"></use>
+                                            </svg>
+                                            <span class="slds-assistive-text">Edit: Zone</span>
+                                            </button>
+                                        </div>
+                                        </div>
+                                    </div>
+                                <div class="slds-form__item" role="listitem">
+                                    <div class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
+                                    <span class="slds-form-element__label">Status</span>
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-form-element__static">
+                                        {selectedRecord.Category}
+                                        </div>
+                                        <button class="slds-button slds-button_icon" title="Edit: Category">
+                                        <svg class="slds-button__icon slds-button__icon_hint" aria-hidden="true">
+                                            <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#edit"></use>
+                                        </svg>
+                                        <span class="slds-assistive-text">Edit: Category</span>
+                                        </button>
+                                    </div>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
                         </lightning-layout-item>
-                        <lightning-layout-item size="6"> 
-                            {selectedRecord.Status}<br />
-                            {selectedRecord.Category}<br />
-                            {selectedRecord.VoteTotal}
+
+                        <lightning-layout-item size="12"> 
+                            <div class="slds-form" role="list">
+                                <div class="slds-form__row">
+                                    <div class="slds-form__item" role="listitem">
+                                        <div class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
+                                        <span class="slds-form-element__label">Body</span>
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-form-element__static">
+                                                <lightning-formatted-rich-text value={selectedRecord.Body}></lightning-formatted-rich-text>
+                                            </div>
+                                            <button class="slds-button slds-button_icon" title="Edit: Body">
+                                            <svg class="slds-button__icon slds-button__icon_hint" aria-hidden="true">
+                                                <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#edit"></use>
+                                            </svg>
+                                            <span class="slds-assistive-text">Edit: Body</span>
+                                            </button>
+                                        </div>
+                                        </div>
+                                    </div>
+                                <div class="slds-form__item" role="listitem">
+                                    <div class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
+                                    <span class="slds-form-element__label">Vote Total</span>
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-form-element__static">
+                                        {selectedRecord.VoteTotal}
+                                        </div>
+                                        <button class="slds-button slds-button_icon" title="Edit: Vote Total">
+                                        <svg class="slds-button__icon slds-button__icon_hint" aria-hidden="true">
+                                            <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#edit"></use>
+                                        </svg>
+                                        <span class="slds-assistive-text">Edit: Vote Total</span>
+                                        </button>
+                                    </div>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
                         </lightning-layout-item>
-                        -->
+
+                        <lightning-layout-item size="12"> 
+                            <div class="slds-form" role="list">
+                                <div class="slds-form__row">
+                                    <div class="slds-form__item" role="listitem">
+                                        <div class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
+                                        <span class="slds-form-element__label">Created By</span>
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-form-element__static">
+                                                {selectedRecord.CreatedBy}
+                                            </div>
+                                            <button class="slds-button slds-button_icon" title="Edit: Created By">
+                                            <svg class="slds-button__icon slds-button__icon_hint" aria-hidden="true">
+                                                <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#edit"></use>
+                                            </svg>
+                                            <span class="slds-assistive-text">Edit: Created By</span>
+                                            </button>
+                                        </div>
+                                        </div>
+                                    </div>
+                                <div class="slds-form__item" role="listitem">
+                                    <div class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
+                                    <span class="slds-form-element__label">Last Modified By</span>
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-form-element__static">
+                                        {selectedRecord.LastModifiedBy}
+                                        </div>
+                                        <button class="slds-button slds-button_icon" title="Edit: Last Modified By">
+                                        <svg class="slds-button__icon slds-button__icon_hint" aria-hidden="true">
+                                            <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#edit"></use>
+                                        </svg>
+                                        <span class="slds-assistive-text">Edit: Last Modified By</span>
+                                        </button>
+                                    </div>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                        </lightning-layout-item>
+
                     </lightning-layout>
                 </lightning-card> 
             </lightning-layout-item>
